@@ -1,0 +1,92 @@
+#
+#services:
+#  prometheus:
+#    image: prom/prometheus
+#    container_name: prometheus
+#    restart: unless-stopped
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#    networks:
+#      - lobiko_mynetwork
+#  tempo:
+#    image: grafana/tempo
+#    container_name: tempo
+#    command: ["-config.file=/etc/tempo.yaml" ]
+#    volumes:
+#      - ./docker/tempo/tempo.yml:/etc/tempo.yaml:ro
+#      - ./docker/tempo/tempo-data:/tmp/tempo
+#    ports:
+#      - "3200:3200" #tempo
+#      - "9411:9411" #zipkin
+#    networks:
+#      - lobiko_mynetwork
+#  loki:
+#    image: grafana/loki:main
+#    container_name: loki
+#    command: [ "-config.file=/etc/loki/local-config.yaml" ]
+#    ports:
+#      - "3100:3100"
+#    networks:
+#      - lobiko_mynetwork
+#  grafana:
+#    image: grafana/grafana
+#    container_name: my-grafana
+#    restart: unless-stopped
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./docker/grafana:/etc/grafana/provisioning/datasources:ro
+#    environment:
+#      - GF_SECURITY_ADMIN_USER=admin
+#      - GF_SECURITY_ADMIN_PASSWORD=password
+#    networks:
+#      - lobiko_mynetwork
+#  my-lobiko-service:
+#    image: my-lobiko-service
+#    build: .
+#    container_name: my-lobiko-service
+#    depends_on:
+#     - tempo
+#     - loki
+#     - db
+#    environment:
+#     SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/lobikodb
+#     SPRING_DATASOURCE_USERNAME: root
+#     SPRING_DATASOURCE_PASSWORD: Fiston+@1984
+#    ports:
+#     - "8889:8889"
+#    networks:
+#     - lobiko_mynetwork
+#  db:
+#    image: mysql:8.0
+#    container_name: db
+#    environment:
+#      MYSQL_ROOT_PASSWORD: Fiston+@1984
+#      MYSQL_DATABASE: lobikodb
+#      MYSQL_USER: augustin
+#      MYSQL_PASSWORD: Fiston+@1984
+#    ports:
+#      - "3306:3306"
+#    networks:
+#      - lobiko_mynetwork
+#networks:
+#  lobiko_mynetwork:
+#      driver: bridge
+##  db:
+##    image: mysql:8.1
+##    container_name: db
+##    restart: always
+##    environment:
+##      - MYSQL_ROOT_PASSWORD= Fiston+@1984
+##      - MYSQL_DATABASE= lobiko-db
+##    ports:
+##      - '3306:3306'
+##    volumes:
+##      - my-db:/var/lib/mysql
+##      - ./my-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+##
+##volumes:
+##    my-db:
+##      driver: local

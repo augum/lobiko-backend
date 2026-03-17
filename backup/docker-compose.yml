@@ -1,0 +1,11 @@
+services:
+  lobiko-app-service:
+    build: .
+    container_name: lobiko-app-service
+    ports:
+      - '8084:8083'
+    expose:
+      - '8084'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http:localhost:8083"]
+      interval: 10s
